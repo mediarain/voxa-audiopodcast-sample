@@ -63,25 +63,25 @@ The audio intents handled in this example are:
 You can track the values for loop, shuffle and current URL playing in the token property of the Alexa event in the path `alexaEvent.context.AudioPlayer.token`:
 
 ```javascript
-	skill.onState('loopOff', (alexaEvent) => {
-		if (alexaEvent.context) {
-		  const token = JSON.parse(alexaEvent.context.AudioPlayer.token);
-		  const shuffle = token.shuffle;
-		  const loop = 0;
-		  const offsetInMilliseconds = alexaEvent.context.AudioPlayer.offsetInMilliseconds;
-		  let index = token.index;
+skill.onState('loopOff', (alexaEvent) => {
+  if (alexaEvent.context) {
+    const token = JSON.parse(alexaEvent.context.AudioPlayer.token);
+    const shuffle = token.shuffle;
+    const loop = 0;
+    const offsetInMilliseconds = alexaEvent.context.AudioPlayer.offsetInMilliseconds;
+    let index = token.index;
 
-		  if (index === podcast.length) {
-		    index = 0;
-		  }
+    if (index === podcast.length) {
+      index = 0;
+    }
 
-		  const directives = buildPlayDirective(podcast[index].url, index, shuffle, loop, offsetInMilliseconds);
+    const directives = buildPlayDirective(podcast[index].url, index, shuffle, loop, offsetInMilliseconds);
 
-		  return { reply: 'Intent.LoopDeactivated', to: 'die', directives };
-		}
+    return { reply: 'Intent.LoopDeactivated', to: 'die', directives };
+  }
 
-		return { reply: 'Intent.Exit', to: 'die' };
-	});
+  return { reply: 'Intent.Exit', to: 'die' };
+});
 ```
 
 For any of these events you can make Alexa to speak after user's action with a reply object, optionally you can define the `die` state and pass through the directives object with either a `AudioPlayer.Play` or `AudioPlayer.Stop` directive type.
@@ -105,37 +105,37 @@ You're not allowed to respond with a reply object since it's just an event most 
 In case the user has activated the loop mode by dispatching the `AMAZON.LoopOnIntent` intent, you can implement a queue list in the `AudioPlayer.PlaybackNearlyFinished` this way:
 
 ```javascript
-	skill['onAudioPlayer.PlaybackNearlyFinished']((alexaEvent, reply) => {
-		const token = JSON.parse(alexaEvent.context.AudioPlayer.token);
+skill['onAudioPlayer.PlaybackNearlyFinished']((alexaEvent, reply) => {
+  const token = JSON.parse(alexaEvent.context.AudioPlayer.token);
 
-		if (token.loop === 0) {
-		  return reply;
-		}
+  if (token.loop === 0) {
+    return reply;
+  }
 
-		const shuffle = token.shuffle;
-		const loop = token.loop;
-		let index = token.index + 1;
+  const shuffle = token.shuffle;
+  const loop = token.loop;
+  let index = token.index + 1;
 
-		if (shuffle === 1) {
-		  index = randomIntInc(0, podcast.length - 1);
-		} else if (index === podcast.length) {
-		  index = 0;
-		}
+  if (shuffle === 1) {
+    index = randomIntInc(0, podcast.length - 1);
+  } else if (index === podcast.length) {
+    index = 0;
+  }
 
-		const directives = buildEnqueueDirective(podcast[index].url, index, shuffle, loop);
-		return reply.append({ directives });
-	});
+  const directives = buildEnqueueDirective(podcast[index].url, index, shuffle, loop);
+  return reply.append({ directives });
+});
 
-	function buildEnqueueDirective(url, index, shuffle, loop) {
-		const directives = {};
-		directives.type = 'AudioPlayer.Play';
-		directives.playBehavior = 'REPLACE_ENQUEUED';
-		directives.token = createToken(index, shuffle, loop);
-		directives.url = podcast[index].url;
-		directives.offsetInMilliseconds = 0;
+function buildEnqueueDirective(url, index, shuffle, loop) {
+  const directives = {};
+  directives.type = 'AudioPlayer.Play';
+  directives.playBehavior = 'REPLACE_ENQUEUED';
+  directives.token = createToken(index, shuffle, loop);
+  directives.url = podcast[index].url;
+  directives.offsetInMilliseconds = 0;
 
-		return directives;
-	}
+  return directives;
+}
 ```
 
 

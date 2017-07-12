@@ -97,9 +97,9 @@ You can also handled the following playback request events:
 You're not allowed to respond with a reply object since it's just an event most for trackign purposes, so it's optional to implement and you can do the following syntax:
 
 ```javascript
-	skill['onAudioPlayer.PlaybackStarted']((alexaEvent) => {
-		console.log('onAudioPlayer.PlaybackStarted', JSON.stringify(alexaEvent, null, 2));
-	});
+skill['onAudioPlayer.PlaybackStarted']((alexaEvent) => {
+  console.log('onAudioPlayer.PlaybackStarted', JSON.stringify(alexaEvent, null, 2));
+});
 ```
 
 In case the user has activated the loop mode by dispatching the `AMAZON.LoopOnIntent` intent, you can implement a queue list in the `AudioPlayer.PlaybackNearlyFinished` this way:

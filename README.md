@@ -62,6 +62,7 @@ The audio intents handled in this example are:
 
 You can track the values for loop, shuffle and current URL playing in the token property of the Alexa event in the path `alexaEvent.context.AudioPlayer.token`:
 
+```javascript
 	skill.onState('loopOff', (alexaEvent) => {
 		if (alexaEvent.context) {
 		  const token = JSON.parse(alexaEvent.context.AudioPlayer.token);
@@ -81,6 +82,7 @@ You can track the values for loop, shuffle and current URL playing in the token 
 
 		return { reply: 'Intent.Exit', to: 'die' };
 	});
+```
 
 For any of these events you can make Alexa to speak after user's action with a reply object, optionally you can define the `die` state and pass through the directives object with either a `AudioPlayer.Play` or `AudioPlayer.Stop` directive type.
 
@@ -94,12 +96,15 @@ You can also handled the following playback request events:
 
 You're not allowed to respond with a reply object since it's just an event most for trackign purposes, so it's optional to implement and you can do the following syntax:
 
+```javascript
 	skill['onAudioPlayer.PlaybackStarted']((alexaEvent) => {
 		console.log('onAudioPlayer.PlaybackStarted', JSON.stringify(alexaEvent, null, 2));
 	});
+```
 
 In case the user has activated the loop mode by dispatching the `AMAZON.LoopOnIntent` intent, you can implement a queue list in the `AudioPlayer.PlaybackNearlyFinished` this way:
 
+```javascript
 	skill['onAudioPlayer.PlaybackNearlyFinished']((alexaEvent, reply) => {
 		const token = JSON.parse(alexaEvent.context.AudioPlayer.token);
 
@@ -131,6 +136,7 @@ In case the user has activated the loop mode by dispatching the `AMAZON.LoopOnIn
 
 		return directives;
 	}
+```
 
 
 The `buildEnqueueDirective` function is in charge to build a directive object with a queue behavior, which will allow the skill to play the next audio as soon as the current one is finished.
